@@ -7,14 +7,15 @@
     <style>
       
       body {background: #eee;}
+      .charts {margin: auto;}
       svg {font-family: "Helvetica Neue", Helvetica;
       background: #fff;
       }
 
       .axis line, .axis path {fill:none; stroke:#999; shape-rendering: crispEdges;}
       .axis text {color: #999;}
-      .line {fill:none; stroke:#666; stroke-width:1.5px;}
-      .area {fill: #e7e7e7;}
+      .line {fill:none; stroke:#3182bd; stroke-width:1.5px;}
+      .area {fill: #c6dbef;}
 
     </style>
   </head>
@@ -25,7 +26,7 @@
   </body>
   <script src='/js/d3.min.js' charset='utf-8'></script>
   <script>
-    var m = {top: 8, right: 10, bottom: 5, left: 40};
+    var m = {top: 8, right: 10, bottom: 20, left: 50};
     var w = 760 - m.right - m.left;
     var h = 140 - m.top   - m.bottom;
 
@@ -37,7 +38,7 @@
         d.start = new Date(d.start);
         return d;
     }
-    d3.json("/stats?type=createObject", function(data) {
+    function reRender(data) {
         for (var i=0; i < data.length; i++) {data[i] = type(data[i]);}
 
         var stats = d3.nest()
@@ -97,8 +98,14 @@
 
         svg.append("g")
             .attr("class", "x axis")
+            .attr("transform", "translate(0," + h + ")")
             .call(xaxis.scale(xscale));
+    }
 
+    d3.json("/stats?type=createObject", reRender);
+    setInterval(300, function() {
+        console.log("Refreshing data ...");
+        d3.json("/stats?type=createObject", reRender);
     });
     
   </script>
