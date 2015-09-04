@@ -18,7 +18,8 @@ router.get('/', function(req, res, next) {
     AV.Query.doCloudQuery(
         "SELECT type, description, start, delta \
          FROM EchoTime \
-         WHERE start > date(?) AND start < date(?) ORDER BY start",
+         WHERE start > date(?) AND start < date(?) \
+         LIMIT 0,5000 ORDER BY start",
         [from.toISOString(), to.toISOString()],
         {
             success: function(result) {
