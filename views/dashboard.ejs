@@ -12,6 +12,8 @@
       background: #fff;
       }
 
+      li {margin-left: 2em;}
+
       .axis line, .axis path {fill:none; stroke:#999; shape-rendering: crispEdges;}
       .axis text {color: #999;}
       .line {fill:none; stroke:#3182bd; stroke-width:1.5px;}
@@ -20,13 +22,21 @@
     </style>
   </head>
   <body>
-    <h1>LeanEngine Echo</h1>
+    <h1>EchoTime</h1>
+    <ul>(过去48小时内)LeanEngine API的响应速度：
+      <li>createObject: 创建一个对象需要的时间</li>
+      <li>createFile: 创建并存储一个文件需要的时间</li>
+      <li>deleteFile: 删除一个文件需要的时间</li>
+      <li>runFunction: 调用一个Hello world云函数需要的时间</li>
+      注：以上为非官方数据，仅供参考。
+    </ul>
+    <p></p>
     <div class='charts'>
     </div>
   </body>
   <script src='/js/d3.min.js' charset='utf-8'></script>
   <script>
-    var m = {top: 8, right: 10, bottom: 20, left: 50};
+    var m = {top: 10, right: 10, bottom: 25, left: 50};
     var w = 760 - m.right - m.left;
     var h = 140 - m.top   - m.bottom;
 
@@ -38,7 +48,7 @@
         d.start = new Date(d.start);
         return d;
     }
-    function reRender(data) {
+    function updateCharts(data) {
         for (var i=0; i < data.length; i++) {data[i] = type(data[i]);}
 
         var stats = d3.nest()
@@ -102,11 +112,11 @@
             .call(xaxis.scale(xscale));
     }
 
-    d3.json("/stats?type=createObject", reRender);
-    setInterval(300, function() {
+    d3.json("/stats", updateCharts);
+    setInterval(function() {
         console.log("Refreshing data ...");
-        d3.json("/stats?type=createObject", reRender);
-    });
+        d3.json("/stats", updateCharts);
+    }, 300 * 1000);
     
   </script>
 </html>
