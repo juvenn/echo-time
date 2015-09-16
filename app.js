@@ -38,7 +38,21 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function(req, res) {
-  res.render('index', { currentTime: new Date() });
+    res.render('index', { currentTime: new Date()});
+});
+
+app.get('/echo', function(req, res) {
+    res.render('echo', { client: {
+        IP: req.ip,
+        userAgent: req.get('User-Agent'),
+    }});
+});
+
+app.get('/minion', function(req, res) {
+    res.render('minion', { client: {
+        IP: req.ip,
+        userAgent: req.get('User-Agent'),
+    }});
 });
 
 app.get('/dash', function(req, res) {

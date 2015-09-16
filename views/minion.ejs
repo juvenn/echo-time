@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>Lean Minion</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+      li {margin-left: 2em;}
+      form {width: 460px; padding: 10px; border: #eee 1px solid; }
+      form > button {padding: 2em; float: right;}
+      textarea {padding:.5em;}
+    </style>
+  </head>
+  <body>
+    <h1>LeanCloud Minion</h1>
+    <p>A client info collector for LeanCloud.</p>
+    <div>
+      <form id='collector' method='POST' action="#">
+        <!--
+        <p>
+        <label for='api'>LeanCloud API</label>
+        <select name='api'>
+          <option valude='https://api.leancloud.cn'>api.leancloud.cn</option>
+          <option valude='https://cn.avoscloud.com'>cn.avoscloud.com</option>
+        </select>
+        </p>
+        <p>
+        <label for='server_ip'>LeanCloud IP</label>
+        <input name='server_ip' value=''>
+        </p>
+        -->
+        <input type='hidden' name='client_agent' value=''>
+        <p>
+        <label for='client_ip'>我的 IP</label>
+        <input name='client_ip' value=''>
+        </p>
+        <p>
+        <label for='network_type'>网络类型</label>
+        <select name='network_type'>
+          <option value='LAN'>固网</option>
+          <option value='4G'>4G</option>
+          <option value='3G'>3G</option>
+          <option value='2G'>2G</option>
+        </select>
+        </p>
+        <p>
+        <label for='isp'>ISP服务商</label>
+        <input name='isp' value=''>
+        </p>
+        <p>
+        <label for='province'>省</label>
+        <input name='province' value=''>
+        </p>
+        <p>
+        <label for='city'>市</label>
+        <input name='city' value=''>
+        </p>
+        <p>
+        <label for='district'>区/县</label>
+        <input name='district' value=''>
+        </p>
+        <button type='button'>提交</button>
+      </form>
+      <textarea name='console' disabled=disabled
+                rows=20 cols=60></textarea>
+    </div>
+    <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+    <script src="http://userns.dnspod.cn:5353/ip"></script>
+    <script>
+    // `remote_ip_info` is available from dnspod.
+    var client = remote_ip_info;
+    client["userAgent"] = navigator.userAgent;
+
+    $("[name=client_ip]").val(client.ip);
+    $("[name=client_agent]").val(client.userAgent);
+    $("[name=isp]").val(client.isp);
+    $("[name=province]").val(client.province);
+    $("[name=city]").val(client.city);
+    $("[name=district]").val(client.district);
+
+    log = function(message) {
+        $("[name=console]").append("[" + (new Date()).toISOString() + "] " + message + "\n");
+    }
+    log("Start to test LeanCloud API...");
+
+    AV.initialize("QfyeouUjk2B95bJ3EYz2bTOA", "V9FSYpM8vXVF54xglOBVaxbV");
+    var EchoRequest = AV.Object.extend("EchoRequest");
+    setInterval(function() {
+        log("POST classes/{Object}");
+        var echo = new EchoRequest();
+        echo.set("clientIP", client.ip);
+        echo.set("clientUserAgent", client.userAgent);
+        echo.set("method", "POST");
+        echo.set("path", "classes/EchoRequest");
+        echo.set("start", new Date());
+        echo.save(null, {
+            success:  function(req) {
+                var delta = new Date() - echo.get("start");
+                echo.set("delta", delta);
+                echo.save();
+                log("POST success: " + delta + " ms.");
+            }, error: function(err) {
+                var delta = new Date() - echo.get("start");
+                log("POST error: " + delta + " ms: "+ err);
+            }
+        });
+    }, 1000 * 30);
+    </script>
+  </body>
+</html>

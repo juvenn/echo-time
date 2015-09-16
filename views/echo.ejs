@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>LeanEngine Echo</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <style>
+      
+      body {background: #eee;}
+      .charts {margin: auto;}
+      svg {font-family: "Helvetica Neue", Helvetica;
+      background: #fff;
+      }
+
+      li {margin-left: 2em;}
+
+      .axis line, .axis path {fill:none; stroke:#999; shape-rendering: crispEdges;}
+      .axis text {color: #999;}
+      .line {fill:none; stroke:#3182bd; stroke-width:1.5px;}
+      .area {fill: #c6dbef;}
+
+    </style>
+  </head>
+  <body>
+    <h1>LeanEngine Echo</h1>
+    <pre><code>
+    IP:         <%= client.IP %>
+    User-Agent: <%= client.userAgent %>
+    </code></pre>
+    <div class='charts'>
+    </div>
+    <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+    <script src="/js/d3.min.js"></script>
+    <script>
+    var client = {
+        IP: "<%= client.IP %>",
+        userAgent: "<%= client.userAgent %>",
+    };
+
+    AV.initialize("QfyeouUjk2B95bJ3EYz2bTOA", "V9FSYpM8vXVF54xglOBVaxbV");
+    var EchoRequest = AV.Object.extend("EchoRequest");
+    setInterval(function() {
+        console.log("Issue a request: POST classes/EchoRequest");
+        var echo = new EchoRequest();
+        echo.set("clientIP", client.IP);
+        echo.set("clientUserAgent", client.userAgent);
+        echo.set("method", "POST");
+        echo.set("path", "classes/EchoRequest");
+        echo.set("start", new Date());
+        echo.save(null, {
+            success:  function(req) {
+                echo.set("delta", new Date() - echo.get("start"));
+                echo.save();
+            }, error: function(err) {
+                console.log(err);
+            }
+        });
+    }, 1000 * 300);
+    </script>
+  </body>
+</html>
