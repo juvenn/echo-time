@@ -117,4 +117,5 @@ log("Start to test LeanCloud API...");
 setInterval(function() {
     simulateCreatingObject();
     simulateCreatingFile();
+    logArea.scrollTop = logArea.scrollHeight; // auto scroll log area
 }, 1000 * 10);

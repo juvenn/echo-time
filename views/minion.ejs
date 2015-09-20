@@ -2,16 +2,35 @@
 <html>
   <head>
     <meta charset='utf-8'>
-    <title>Lean Minion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8"/>
+    <title>LeanCloud Minion</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <style>
+      body {margin:0; padding:1em;}
+      @media all {
+          .main {margin: 0 auto; width: 30em;}
+      }
+      @media (max-width:500px) {
+          .main {margin: 0 auto; width: 100%;}
+      }
       li {margin-left: 2em;}
-      form {width: 460px; padding: 10px; border: #eee 1px solid; }
-      form > button {padding: 2em; float: right;}
+      form {padding: 1em; border: #eee 1px solid; }
+      form {
+            overflow: hidden;
+            display: inline-block; /* Trigger "hasLayout" in IE */
+            display: block;        /* Set element back to block */
+      }
+      form > button {
+          padding: .5em 2em;
+          cursor:pointer;
+          border-radius:.2em;
+          -moz-border-radius:.2em;
+          -webkit-border-radius:.2em;}
       textarea {padding:.5em;}
     </style>
   </head>
   <body>
+    <div class="main">
     <h1>LeanCloud Minion</h1>
     <p>A client info collector for LeanCloud.</p>
     <div>
@@ -60,9 +79,11 @@
         <input name='district' value=''>
         </p>
         <button type='button'>提交</button>
+        <div ></div>
       </form>
+    </div>
       <textarea id='logarea' name='console' disabled=disabled
-                rows=20 cols=60></textarea>
+                rows=20 cols=56></textarea>
     </div>
     <script src="http://userns.dnspod.cn:5353/ip"></script>
     <script src="/js/av-core-mini-0.6.1.js"></script>
